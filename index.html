@@ -1,22 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>True North</title>
     <link rel="stylesheet" href="./css/style.css" />
-  </head>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
 
-  <body>
-    <!-- Title -->
-    <main class="container">
-        <h1>True North</h1>
-        <p>Tell me about a time you created something you were proud of. It doesn't have to be big. What was it, how did you do it, and what did it make you feel?</p>
-        <textarea id="userStory" placeholder="Your story..."></textarea>
-        <button id="connectButton">Connect the Dots</button>
-        <div id="resultsContainer" class="hidden">
+<body>
+    <main id="input-screen" class="container">
+    <h1>True North</h1>
+    
+    <div class="form-group">
+        <label for="userStory">Describe the hardest you've ever worked on something you weren't paid for and didn't get a grade for. What was it, and why did you pour so much of yourself into it?</label>
+        <textarea id="userStory" placeholder="Your proudest story..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="userFocus">What are your primary skills or areas of focus right now?</label>
+        <input type="text" id="userFocus" placeholder="e.g., Backend & APIs, Algorithms, AI...">
+    </div>
+
+    <div class="form-group">
+        <label for="userAmbition">In the long run, what kind of impact do you want to make?</label>
+        <input type="text" id="userAmbition" placeholder="e.g., Lead teams, be a technical expert...">
+    </div>
+
+    <button id="connectButton">Connect the Dots</button>
+</main>
+
+    <div id="loading-screen" class="loading-container">
+        <div class="dots">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <p class="loading-text">Connecting the dots...</p>
+    </div>
+
+    <div id="output-screen" class="container">
+        <div id="resultsContainer">
             </div>
-    </main>
+    </div>
+
     <script src="script.js"></script>
-  </body>
+</body>
 </html>

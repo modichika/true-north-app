@@ -1,26 +1,65 @@
-// Step 1: Get references to the HTML elements so our script can interact with them.
+// Get references to all our "screens" and elements
+const inputScreen = document.getElementById('input-screen');
+const loadingScreen = document.getElementById('loading-screen');
+const outputScreen = document.getElementById('output-screen');
 const connectButton = document.getElementById('connectButton');
 const userStoryInput = document.getElementById('userStory');
+const userFocusInput = document.getElementById('userFocus');
+const userAmbitionInput = document.getElementById('userAmbition');
 const resultsContainer = document.getElementById('resultsContainer');
 
-// Step 2: Add an "event listener" that waits for the user to click the button.
-connectButton.addEventListener('click', () => {
-    // This code inside here will only run when the button is clicked.
-  //  userStoryInput.innerHTML = '';
+// Set the initial state of the page
+loadingScreen.style.display = 'none';
+outputScreen.style.display = 'none';
+inputScreen.style.display = 'block';
 
-    // Step 3: Get the story text from the input box.
+connectButton.addEventListener('click', async () => {
+    // Get data from all three inputs
     const story = userStoryInput.value;
+    const focus = userFocusInput.value;
+    const ambition = userAmbitionInput.value;
 
-    // A quick check to make sure the story isn't empty.
-    if (story.trim() === '') {
-        alert('Please share your story first!');
-        return; // This stops the function from running further.
+    if (story.trim() === '' || focus.trim() === '' || ambition.trim() === '') {
+        alert('Please fill out all three fields!');
+        return;
     }
 
-    // For now, we'll just confirm that we captured the story correctly.
-    console.log("Story captured:", story);
+    // Hide the input screen and show the loading screen
+    inputScreen.style.display = 'none';
+    loadingScreen.style.display = 'flex';
 
-    // Step 4: Show a "loading" message on the screen for instant user feedback.
-    resultsContainer.classList.remove('hidden');
-    resultsContainer.innerHTML = '<p>Connecting the dots...</p>';
-}, { once: true });
+    const backendUrl = "https://us-central1-true-north-hackathon.cloudfunctions.net/true-north-backend"; 
+
+    try {
+        // Package all three pieces of data to send
+        const userProfile = {
+            story: story,
+            focus: focus,
+            ambition: ambition
+        };
+
+        const response = await fetch(backendUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userProfile) // Send the full profile
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // Hide loading, show output, and display the result
+        loadingScreen.style.display = 'none';
+        outputScreen.style.display = 'block';
+        resultsContainer.innerHTML = marked.parse(result.aiResponse);
+
+    } catch (error) {
+        // Handle errors
+        loadingScreen.style.display = 'none';
+        outputScreen.style.display = 'block';
+        resultsContainer.innerHTML = `<p style="color: red;">An error occurred. Please try again later.</p>`;
+        console.error('Error:', error);
+    }
+});
